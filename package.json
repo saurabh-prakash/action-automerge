@@ -4,7 +4,7 @@
   "description": "This action automerge the source branch into the target branch.",
   "main": "src/index.js",
   "scripts": {
-    "build": "ncc build src/index.js",
+    "build": "npx @vercel/ncc build src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

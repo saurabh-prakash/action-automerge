@@ -7,44 +7,46 @@ const token = core.getInput('github_token')
 const octokit = new Octokit({ auth: token })
 const repo = github.context.repo
 
-function slackSuccessMessage(source, target, status) {
+function slackSuccessMessage(source, target) {
   return {
-      color: "#27ae60",
-      icon: ":white_check_mark:",
-      message: `${source} was successfully merged into ${target}.`,
-      description: `*${target}* can be pushed to production!`
+    color: "#27ae60",
+    icon: ":white_check_mark:",
+    message: `${source} was successfully merged into ${target}.`,
+    description: `Kudos!!`
   }
 }
 
-function slackErrorMessage(source, target, status) {
+function slackErrorMessage(source, target) {
   return {
-      color: "#C0392A",
-      icon: ":red_circle:",
-      message: `*${source}* has confilct with *${target}*.`,
-      description: ":face_with_head_bandage: Fix me please :pray:"
+    color: "#C0392A",
+    icon: ":red_circle:",
+    message: `*${source}* has conflict with *${target}*.`,
+    description: ":face_with_head_bandage: Fix me please :pray:"
   }
 }
 
 async function slackMessage(source, target, status) {
   if (core.getInput('webhook_url')) {
+    let channel = core.getInput('channel')
     let payload = status == 'success' ?
-                  slackSuccessMessage(source, target, status) :
-                  slackErrorMessage(source, target, status)
+      slackSuccessMessage(source, target) :
+      slackErrorMessage(source, target)
 
     slack.send({
+      channel: channel,
       icon_emoji: payload.icon,
       username: payload.message,
       attachments: [
-          {
-              author_name: github.context.payload.repository.full_name,
-              author_link: `https://github.com/${github.context.payload.repository.full_name}/`,
-              title: payload.message,
-              text: payload.description,
-              color: payload.color,
-              fields: [
-                  { title: 'Job Status', value: status, short: false },
-              ],
-          },
+        {
+          author_name: github.context.payload.repository.full_name,
+          author_link: `https://github.com/${github.context.payload.repository.full_name}/`,
+          title: payload.message,
+          text: payload.description,
+          color: payload.color,
+          fields: [
+            { title: 'Job Status', value: status, short: false },
+          ],
+        },
       ],
     });
   }

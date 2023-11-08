@@ -16,6 +16,9 @@ GitHub action to automatically merge the source branch into a target branch ever
 
 **Optional** The Slack webhook URL to post to.
 
+### `channel`
+
+**Optional** The Slack channel to post to.
 
 ## Example usage
 
@@ -42,6 +45,7 @@ jobs:
           source: 'master'
           target: 'release'
           webhook_url: #if present add the Slack webhook
+          channel: #if present add the Slack channel
 ```
 
 ## Build
